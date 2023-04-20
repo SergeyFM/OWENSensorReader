@@ -886,7 +886,7 @@
             textBoxTIMEOUT.Name = "textBoxTIMEOUT";
             textBoxTIMEOUT.Size = new Size(100, 23);
             textBoxTIMEOUT.TabIndex = 0;
-            textBoxTIMEOUT.Text = "30";
+            textBoxTIMEOUT.Text = "100";
             // 
             // FormMain
             // 

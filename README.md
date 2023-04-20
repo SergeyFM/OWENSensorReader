@@ -4,8 +4,8 @@ Reads input registers of OVEN modules: ОВЕН MB110-220.8AC, ОВЕН MB110-22
 ![](form.png)
 
 1. You input COM port
-2. Press connect
-3. Set timeout, 30 by default
+2. Set timeout, 30 by default (need reconnect to aply changes)
+3. Press connect
 4. Choose OVEN model
 5. Set slave ID
 6. Checkbox on the left means that this device will be scanned
