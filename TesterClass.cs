@@ -3,9 +3,12 @@ using System.Runtime.InteropServices;
 
 
 namespace PassportGenerator.test {
+    /// <summary>
+    /// Test class, here you can test functions separately.
+    /// </summary>
     internal static class TesterClass {
-
-        public const bool TESTING = false;
+        
+        public const bool TESTING = false; // when true, launches only command line and function Run().
 
         public static void Run() {
             AllocConsole();

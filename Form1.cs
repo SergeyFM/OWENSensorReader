@@ -13,6 +13,11 @@ namespace OvenSensorReader {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Creates global lists of textboxes, checklists
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FormMain_Load(object sender, EventArgs e) {
             this.comboBoxOvenModel.SelectedIndex = 1;
             // convert this.textBoxTIMEOUT.Text to int
@@ -33,22 +38,37 @@ namespace OvenSensorReader {
             slaveIDs = new List<TextBox>() { textBoxSlaveID1, textBoxSlaveID2, textBoxSlaveID3, textBoxSlaveID4, textBoxSlaveID5, textBoxSlaveID6 };
         }
 
+        /// <summary>
+        /// Connect to COM port and creates RTU Master
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonConnectToCOM_Click(object sender, EventArgs e) {
             ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
-            this.labelCOMPortConnectionResult.Text = ModbusReader.OpenPort(this.textBoxCOMPort.Text) ? "COM cnn OK" : "COM cnn ERR";
+            this.labelCOMPortConnectionResult.Text = ModbusReader.OpenPort(this.textBoxCOMPort.Text) ? "COM_cnn OK" : "COM_cnn ERR";
             Application.DoEvents();
             if (ModbusReader._PORT is null) return;
             string createMasterResult = ModbusReader.CreateRtuMaster(ModbusReader._PORT) ? ", RtuMaster OK" : ", RtuMaster ERR";
             this.labelCOMPortConnectionResult.Text += createMasterResult;
         }
 
+        /// <summary>
+        /// Disconnects COM port
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonDisconnectCOM_Click(object sender, EventArgs e) {
             this.labelCOMPortConnectionResult.Text = ModbusReader.ClosePort() ? "Closing OK" : "Error closing";
         }
 
 
 
-
+        /// <summary>
+        /// Starts reading process.
+        /// When checkbox "loop" is checked, repeats reading
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonReadValuesOnce_Click(object sender, EventArgs e) {
             ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
             int ind = 0;
@@ -63,10 +83,16 @@ namespace OvenSensorReader {
             } while (ind < 6);
         }
 
+        /// <summary>
+        /// Gets register values from the OVEN and puts them in the textboxes
+        /// </summary>
+        /// <param name="lineInd"></param>
+        /// <param name="checkboxes"></param>
+        /// <param name="fields"></param>
+        /// <param name="slaveIDs"></param>
         private void fillTheLine(int lineInd, List<CheckBox> checkboxes, List<TextBox[]> fields, List<TextBox> slaveIDs) {
             try {
                 if (checkboxes[lineInd].Checked == false) return;
-                ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
                 List<TextBox> lineTextBoxes = fields[lineInd].ToList();
                 int ovenModelNumber = this.comboBoxOvenModel.SelectedIndex;
                 ushort startAddress = ModbusReader.GetOvenInputOffsets(ovenModelNumber).Last();
@@ -93,7 +119,11 @@ namespace OvenSensorReader {
             }
 
         }
-
+        /// <summary>
+        /// Sets all checkboxes ON
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void buttonSetAllCheckboxesON_Click(object sender, EventArgs e) {
             checkboxes.ForEach(x => x.Checked = true);
         }

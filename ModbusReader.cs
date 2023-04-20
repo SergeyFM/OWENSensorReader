@@ -4,14 +4,19 @@ using NModbus.Serial;
 using PassportGenerator.mod;
 
 namespace OvenSensorReader {
+    /// <summary>
+    /// Static class with modbus functions
+    /// </summary>
     public static class ModbusReader {
 
 
         public static SerialPort _PORT = null;
         public static IModbusMaster _MASTER = null;
-        //public static IModbusSerialMaster _MASTER = null;
         public static int TIMEOUT = 80;
 
+        /// <summary>
+        /// Test function
+        /// </summary>
         public static void DoAll_TEST() {
             SerialPort port = new SerialPort("COM9");
             port.BaudRate = 9600;
@@ -44,7 +49,11 @@ namespace OvenSensorReader {
             Console.WriteLine($"Result: {data?.First()}");
 
         }
-
+        /// <summary>
+        /// Opens COM port and saves it in the global variable _PORT
+        /// </summary>
+        /// <param name="PrimarySerialPortName"></param>
+        /// <returns></returns>
         public static bool OpenPort(string PrimarySerialPortName) {
 
             try {
@@ -69,6 +78,10 @@ namespace OvenSensorReader {
             return true;
         }
 
+        /// <summary>
+        /// Closts COM port
+        /// </summary>
+        /// <returns></returns>
         public static bool ClosePort() {
 
             try {
@@ -80,6 +93,11 @@ namespace OvenSensorReader {
             }
         }
 
+        /// <summary>
+        /// Creates RTU master
+        /// </summary>
+        /// <param name="_PORT"></param>
+        /// <returns></returns>
         public static bool CreateRtuMaster(SerialPort _PORT) {
             try {
                 var factory = new ModbusFactory();
@@ -97,6 +115,11 @@ namespace OvenSensorReader {
             }
         }
 
+        /// <summary>
+        /// Creates ASCII master
+        /// </summary>
+        /// <param name="_PORT"></param>
+        /// <returns></returns>
         public static bool CreateAsciiMaster(SerialPort _PORT) {
             try {
                 var factory = new ModbusFactory();
@@ -112,6 +135,13 @@ namespace OvenSensorReader {
             }
         }
 
+        /// <summary>
+        /// Reads registers
+        /// </summary>
+        /// <param name="slaveId"></param>
+        /// <param name="startAddress"></param>
+        /// <param name="numberOfPoints"></param>
+        /// <returns></returns>
         public static ushort[] ReadHoldingRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
             if (_PORT == null || _PORT.IsOpen == false) {
                 Logger.Log("COM Port is not ready");
@@ -130,6 +160,13 @@ namespace OvenSensorReader {
             }
         }
 
+        /// <summary>
+        /// Another way to read registers
+        /// </summary>
+        /// <param name="slaveId"></param>
+        /// <param name="startAddress"></param>
+        /// <param name="numberOfPoints"></param>
+        /// <returns></returns>
         public static ushort[] ReadInputRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
             try {
                 var data = _MASTER?.ReadInputRegisters(slaveId, startAddress, numberOfPoints);
@@ -140,6 +177,11 @@ namespace OvenSensorReader {
             }
         }
 
+        /// <summary>
+        /// Returns offsets to read singular registers
+        /// </summary>
+        /// <param name="ovenVariant"></param>
+        /// <returns></returns>
         public static List<ushort> GetOvenInputOffsets(int ovenVariant = 0) {
             // 0 ОВЕН МВ110-220.8АС
             // 1 ОВЕН МВ110-224.8А

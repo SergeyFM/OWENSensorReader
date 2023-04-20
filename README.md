@@ -1,10 +1,11 @@
 # OVENSensorReader
 Reads input registers of OVEN modules: ОВЕН MB110-220.8AC, ОВЕН MB110-224.8A
+Uses Modbus RTU master through Serial Port. Uses ReadHoldingRegisters() function.
 
 ![](form.png)
 
 1. You input COM port
-2. Set timeout, 30 by default (need reconnect to aply changes)
+2. Set timeout, 100 by default (need reconnect to aply changes)
 3. Press connect
 4. Choose OVEN model
 5. Set slave ID
