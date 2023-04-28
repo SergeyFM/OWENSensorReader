@@ -83,7 +83,7 @@ namespace OvenSensorReader {
         /// </summary>
         /// <returns></returns>
         public static bool ClosePort() {
-
+            if ( _PORT == null || _PORT.IsOpen == false)  return true;
             try {
                 _PORT.Close();
                 return true;

@@ -104,6 +104,7 @@
             buttonSetAllCheckboxesON = new Button();
             checkBoxLoop = new CheckBox();
             textBoxTIMEOUT = new TextBox();
+            buttonConnectReadDis = new Button();
             statusStrip.SuspendLayout();
             SuspendLayout();
             // 
@@ -766,7 +767,7 @@
             // 
             buttonReadValuesOnce.Location = new Point(55, 298);
             buttonReadValuesOnce.Name = "buttonReadValuesOnce";
-            buttonReadValuesOnce.Size = new Size(75, 23);
+            buttonReadValuesOnce.Size = new Size(100, 23);
             buttonReadValuesOnce.TabIndex = 1;
             buttonReadValuesOnce.Text = "Read";
             buttonReadValuesOnce.UseVisualStyleBackColor = true;
@@ -873,7 +874,7 @@
             // checkBoxLoop
             // 
             checkBoxLoop.AutoSize = true;
-            checkBoxLoop.Location = new Point(148, 301);
+            checkBoxLoop.Location = new Point(180, 298);
             checkBoxLoop.Name = "checkBoxLoop";
             checkBoxLoop.Size = new Size(50, 19);
             checkBoxLoop.TabIndex = 11;
@@ -887,6 +888,16 @@
             textBoxTIMEOUT.Size = new Size(100, 23);
             textBoxTIMEOUT.TabIndex = 0;
             textBoxTIMEOUT.Text = "100";
+            // 
+            // buttonConnectReadDis
+            // 
+            buttonConnectReadDis.Location = new Point(55, 327);
+            buttonConnectReadDis.Name = "buttonConnectReadDis";
+            buttonConnectReadDis.Size = new Size(100, 23);
+            buttonConnectReadDis.TabIndex = 1;
+            buttonConnectReadDis.Text = "Cnn-Read-Disc";
+            buttonConnectReadDis.UseVisualStyleBackColor = true;
+            buttonConnectReadDis.Click += buttonConnectReadDis_Click;
             // 
             // FormMain
             // 
@@ -969,6 +980,7 @@
             Controls.Add(textBoxSlaveID1);
             Controls.Add(labelCOMPortConnectionResult);
             Controls.Add(buttonDisconnectCOM);
+            Controls.Add(buttonConnectReadDis);
             Controls.Add(buttonReadValuesOnce);
             Controls.Add(buttonConnectToCOM);
             Controls.Add(textBoxTIMEOUT);
@@ -1066,5 +1078,6 @@
         private Button buttonSetAllCheckboxesON;
         private CheckBox checkBoxLoop;
         private TextBox textBoxTIMEOUT;
+        private Button buttonConnectReadDis;
     }
 }

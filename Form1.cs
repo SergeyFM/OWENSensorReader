@@ -127,5 +127,12 @@ namespace OvenSensorReader {
         private void buttonSetAllCheckboxesON_Click(object sender, EventArgs e) {
             checkboxes.ForEach(x => x.Checked = true);
         }
+
+        private void buttonConnectReadDis_Click(object sender, EventArgs e) {
+            buttonConnectToCOM_Click(sender, e);
+            checkBoxLoop.Checked = false;
+            buttonReadValuesOnce_Click(sender, e);
+            buttonDisconnectCOM_Click(sender, e);
+        }
     }
 }
