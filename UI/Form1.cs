@@ -1,8 +1,11 @@
 using System.Windows.Forms;
-using PassportGenerator.mod;
+using OvenSensorReader.Modbus;
 using static System.Windows.Forms.DataFormats;
+using OvenSensorReader.Log;
 
-namespace OvenSensorReader {
+
+namespace OvenSensorReader
+{
     public partial class FormMain : Form {
 
         public List<CheckBox> checkboxes;

@@ -785,7 +785,7 @@
             // statusStrip
             // 
             statusStrip.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel });
-            statusStrip.Location = new Point(0, 400);
+            statusStrip.Location = new Point(0, 497);
             statusStrip.Name = "statusStrip";
             statusStrip.Size = new Size(886, 22);
             statusStrip.TabIndex = 8;
@@ -903,7 +903,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(886, 422);
+            ClientSize = new Size(886, 519);
             Controls.Add(checkBoxLoop);
             Controls.Add(buttonSetAllCheckboxesON);
             Controls.Add(checkBox6);
