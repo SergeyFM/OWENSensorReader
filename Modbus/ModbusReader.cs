@@ -1,14 +1,13 @@
 ﻿using System.IO.Ports;
 using NModbus;
 using NModbus.Serial;
-using OvenSensorReader.Log;
 
 namespace OvenSensorReader.Modbus
 {
     /// <summary>
     /// Static class with modbus functions
     /// </summary>
-    public static class ModbusReader
+    public class ModbusReader
     {
 
 

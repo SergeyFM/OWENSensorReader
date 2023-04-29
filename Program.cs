@@ -1,7 +1,7 @@
-using OvenSensorReader.Log;
-using OvenSensorReader.Modbus;
-using OvenSensorReader.Settings;
-using OvenSensorReader.Test;
+global using OvenSensorReader.Log;
+global using OvenSensorReader.Modbus;
+global using OvenSensorReader.Settings;
+global using OvenSensorReader.Test;
 
 namespace OvenSensorReader
 {
@@ -19,18 +19,13 @@ namespace OvenSensorReader
         /// </summary>
         [STAThread]
         static void Main() {
-            LoadObjects();
+         
             if (TesterClass.TESTING) {
                 TesterClass.Run();
                 return;
             }
             ApplicationConfiguration.Initialize();
             Application.Run(new FormMain());
-        }
-
-
-        static void LoadObjects() {
-            
         }
     }
 
