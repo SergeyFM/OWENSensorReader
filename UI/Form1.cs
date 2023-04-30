@@ -1,9 +1,3 @@
-using System.Windows.Forms;
-using OvenSensorReader.Modbus;
-using static System.Windows.Forms.DataFormats;
-using OvenSensorReader.Log;
-
-
 namespace OvenSensorReader;
 
 public partial class FormMain : Form {
@@ -39,7 +33,7 @@ public partial class FormMain : Form {
 
         slaveIDs = new List<TextBox>() { textBoxSlaveID1, textBoxSlaveID2, textBoxSlaveID3, textBoxSlaveID4, textBoxSlaveID5, textBoxSlaveID6 };
 
-
+        
         LoadSettings();
 
         ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
@@ -57,6 +51,10 @@ public partial class FormMain : Form {
         this.textBoxCOMPort.Text = appSettings.ComPort;
         this.textBoxTIMEOUT.Text = appSettings.Timeout.ToString();
         ovenModelsFields.ForEach(o => o.DataSource = ovenModels.Select(o => o.Name).ToList());
+        ovenModelsFields.ForEach(
+         o => o.SelectedIndex = ovenModels.Where(m => m.Name == ovenSettings[ovenModelsFields.IndexOf(o)].OvenModel.Name)
+        .Select(mid => mid.OvenModelID).FirstOrDefault()
+        );
 
 
     }
@@ -117,19 +115,21 @@ public partial class FormMain : Form {
     /// <param name="slaveIDs"></param>
     private void fillTheLine(int lineInd, List<CheckBox> checkboxes, List<TextBox[]> fields, List<TextBox> slaveIDs, List<ComboBox> ovenModelNames) {
         try {
-            var ovenModelNumber = 1;
+            
             if (checkboxes[lineInd].Checked == false) return;
             List<TextBox> lineTextBoxes = fields[lineInd].ToList();
-            ushort startAddress = ModbusReader.GetOvenInputOffsets(ovenModelNumber).Last();
+            OvenModel currentOvenModel = glSettingsProvider.GetSettings_OvenModelsList().Where(m => m.Name == ovenModelsFields[lineInd].SelectedItem.ToString()).FirstOrDefault();
+            ushort startAddress = currentOvenModel.StartAdress;
             byte slaveId = Convert.ToByte(slaveIDs[lineInd].Text);
-            var values = ModbusReader.ReadHoldingRegisters(slaveId, startAddress, 45);
+            var values = ModbusReader.ReadHoldingRegisters(slaveId, startAddress, currentOvenModel.NumberOfPoints);
             if (values is null) {
                 checkboxes[lineInd].Checked = false;
                 return;
             }
+            
             for (int i = 0; i < 8; i++) {
 
-                ushort offset = ModbusReader.GetOvenInputOffsets(ovenModelNumber)[i];
+                ushort offset = currentOvenModel.RegisterOffsets[i];
 
                 var cellVal = values[offset].ToString();
                 lineTextBoxes[i].Text = cellVal;
@@ -158,5 +158,29 @@ public partial class FormMain : Form {
         checkBoxLoop.Checked = false;
         buttonReadValuesOnce_Click(sender, e);
         buttonDisconnectCOM_Click(sender, e);
+    }
+
+    private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
+        SaveSettings();
+    }
+
+    private void SaveSettings() {
+
+    AppSettings appSettings = new AppSettings() {
+            AppSettingID = 0,
+            CheckBoxesList = checkboxes.Select(c => c.Checked).ToList(),
+            ComPort = textBoxCOMPort.Text,
+            LoopCheckBox = checkBoxLoop.Checked,
+            Timeout = int.TryParse(textBoxTIMEOUT.Text, out int timeout) ? timeout : 200
+        };
+    List<OvenSettings> ovenSettings = slaveIDs.Select(s => new OvenSettings() {
+            OvenID = slaveIDs.IndexOf(s),
+            SlaveID = byte.TryParse(s.Text, out byte slaveID) ? slaveID : (byte)0,
+            OvenModel = glSettingsProvider.GetSettings_OvenModelsList().FirstOrDefault(o => o.Name == ovenModelsFields[slaveIDs.IndexOf(s)].SelectedItem.ToString())
+        }).ToList();
+
+        glSettingsProvider.SaveSettings(appSettings);
+        glSettingsProvider.SaveSettings(ovenSettings);
+        glSettingsProvider.SaveSettingsFile();
     }
 }

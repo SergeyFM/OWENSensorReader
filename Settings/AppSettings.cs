@@ -6,11 +6,10 @@ internal class AppSettings {
     public int Timeout { get; set; }
     public List<bool> CheckBoxesList { get; set; }
     public bool LoopCheckBox { get; set; }
-    public int OvenID { get; set; }
 
 
     public override string ToString() {
-        return $"AppSettingID: {AppSettingID}, \nComPort: {ComPort}, \nTimeout: {Timeout}, \nCheckBoxesList: {CheckBoxesList?.Aggregate("", (aggr, c) => aggr + c + " ")}, \nLoopCheckBox: {LoopCheckBox}, \nOvenID: {OvenID}";
+        return $"AppSettingID: {AppSettingID}, \nComPort: {ComPort}, \nTimeout: {Timeout}, \nCheckBoxesList: {CheckBoxesList?.Aggregate("", (aggr, c) => aggr + c + " ")}, \nLoopCheckBox: {LoopCheckBox}";
     }
 
 }

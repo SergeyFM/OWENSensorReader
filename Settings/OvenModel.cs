@@ -9,7 +9,7 @@ namespace OvenSensorReader.Settings {
         public int OvenModelID { get; set; }
         public string Name { get; set; }
         public ushort StartAdress { get; set; }
-        public int NumberOfPoints { get; set; }
+        public ushort NumberOfPoints { get; set; }
         public List<ushort> RegisterOffsets { get; set; }
 
 

@@ -111,6 +111,7 @@ partial class FormMain {
         comboBoxOvenModel4 = new ComboBox();
         comboBoxOvenModel5 = new ComboBox();
         comboBoxOvenModel6 = new ComboBox();
+        label12 = new Label();
         statusStrip.SuspendLayout();
         SuspendLayout();
         // 
@@ -124,7 +125,7 @@ partial class FormMain {
         // 
         // buttonConnectToCOM
         // 
-        buttonConnectToCOM.Location = new Point(182, 48);
+        buttonConnectToCOM.Location = new Point(55, 319);
         buttonConnectToCOM.Name = "buttonConnectToCOM";
         buttonConnectToCOM.Size = new Size(75, 23);
         buttonConnectToCOM.TabIndex = 1;
@@ -135,7 +136,7 @@ partial class FormMain {
         // labelCOMPortConnectionResult
         // 
         labelCOMPortConnectionResult.AutoSize = true;
-        labelCOMPortConnectionResult.Location = new Point(360, 51);
+        labelCOMPortConnectionResult.Location = new Point(55, 345);
         labelCOMPortConnectionResult.Name = "labelCOMPortConnectionResult";
         labelCOMPortConnectionResult.Size = new Size(148, 15);
         labelCOMPortConnectionResult.TabIndex = 2;
@@ -321,7 +322,7 @@ partial class FormMain {
         // 
         // buttonDisconnectCOM
         // 
-        buttonDisconnectCOM.Location = new Point(263, 48);
+        buttonDisconnectCOM.Location = new Point(136, 319);
         buttonDisconnectCOM.Name = "buttonDisconnectCOM";
         buttonDisconnectCOM.Size = new Size(75, 23);
         buttonDisconnectCOM.TabIndex = 1;
@@ -771,7 +772,7 @@ partial class FormMain {
         // 
         // buttonReadValuesOnce
         // 
-        buttonReadValuesOnce.Location = new Point(55, 298);
+        buttonReadValuesOnce.Location = new Point(363, 319);
         buttonReadValuesOnce.Name = "buttonReadValuesOnce";
         buttonReadValuesOnce.Size = new Size(100, 23);
         buttonReadValuesOnce.TabIndex = 1;
@@ -782,7 +783,7 @@ partial class FormMain {
         // statusStrip
         // 
         statusStrip.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel });
-        statusStrip.Location = new Point(0, 650);
+        statusStrip.Location = new Point(0, 398);
         statusStrip.Name = "statusStrip";
         statusStrip.Size = new Size(1003, 22);
         statusStrip.TabIndex = 8;
@@ -871,7 +872,7 @@ partial class FormMain {
         // checkBoxLoop
         // 
         checkBoxLoop.AutoSize = true;
-        checkBoxLoop.Location = new Point(180, 298);
+        checkBoxLoop.Location = new Point(471, 323);
         checkBoxLoop.Name = "checkBoxLoop";
         checkBoxLoop.Size = new Size(50, 19);
         checkBoxLoop.TabIndex = 11;
@@ -880,15 +881,15 @@ partial class FormMain {
         // 
         // textBoxTIMEOUT
         // 
-        textBoxTIMEOUT.Location = new Point(561, 49);
+        textBoxTIMEOUT.Location = new Point(136, 48);
         textBoxTIMEOUT.Name = "textBoxTIMEOUT";
-        textBoxTIMEOUT.Size = new Size(100, 23);
+        textBoxTIMEOUT.Size = new Size(63, 23);
         textBoxTIMEOUT.TabIndex = 0;
         textBoxTIMEOUT.Text = "250";
         // 
         // buttonConnectReadDis
         // 
-        buttonConnectReadDis.Location = new Point(55, 327);
+        buttonConnectReadDis.Location = new Point(257, 319);
         buttonConnectReadDis.Name = "buttonConnectReadDis";
         buttonConnectReadDis.Size = new Size(100, 23);
         buttonConnectReadDis.TabIndex = 1;
@@ -899,7 +900,7 @@ partial class FormMain {
         // label11
         // 
         label11.AutoSize = true;
-        label11.Location = new Point(161, 87);
+        label11.Location = new Point(124, 87);
         label11.Name = "label11";
         label11.Size = new Size(75, 15);
         label11.TabIndex = 5;
@@ -953,11 +954,20 @@ partial class FormMain {
         comboBoxOvenModel6.Size = new Size(176, 23);
         comboBoxOvenModel6.TabIndex = 12;
         // 
+        // label12
+        // 
+        label12.AutoSize = true;
+        label12.Location = new Point(136, 30);
+        label12.Name = "label12";
+        label12.Size = new Size(51, 15);
+        label12.TabIndex = 5;
+        label12.Text = "Timeout";
+        // 
         // FormMain
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(1003, 672);
+        ClientSize = new Size(1003, 420);
         Controls.Add(comboBoxOvenModel6);
         Controls.Add(comboBoxOvenModel5);
         Controls.Add(comboBoxOvenModel4);
@@ -981,6 +991,7 @@ partial class FormMain {
         Controls.Add(label4);
         Controls.Add(label3);
         Controls.Add(label2);
+        Controls.Add(label12);
         Controls.Add(label10);
         Controls.Add(label11);
         Controls.Add(label1);
@@ -1048,6 +1059,7 @@ partial class FormMain {
         FormBorderStyle = FormBorderStyle.FixedToolWindow;
         Name = "FormMain";
         Text = "OVEN MB110-220.8AC and OVEN MB110-224.8A READER";
+        FormClosing += FormMain_FormClosing;
         Load += FormMain_Load;
         statusStrip.ResumeLayout(false);
         statusStrip.PerformLayout();
@@ -1145,4 +1157,5 @@ partial class FormMain {
     private ComboBox comboBoxOvenModel4;
     private ComboBox comboBoxOvenModel5;
     private ComboBox comboBoxOvenModel6;
+    private Label label12;
 }

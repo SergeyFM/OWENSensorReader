@@ -42,13 +42,12 @@ internal static class TesterClass {
             ComPort = "COM1",
             Timeout = 1000,
             CheckBoxesList = new List<bool> { true, true, true, true, true, true },
-            LoopCheckBox = false,
-            OvenID = 0
+            LoopCheckBox = false
         };
 
 
         glSettingsProvider.SaveSettings(appSettings);
-        glSettingsProvider.SaveSettings(oven);
+        glSettingsProvider.SaveSettings(new List<OvenSettings>() { oven});
         glSettingsProvider.SaveSettings(ovenModel);
         glSettingsProvider.SaveSettings(ovenModel2);
 
