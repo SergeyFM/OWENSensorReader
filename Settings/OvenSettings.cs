@@ -1,11 +1,14 @@
 ﻿
-namespace OvenSensorReader.Settings {
-    internal class OvenSettings {
-        public byte SlaveID { get; set; }
-        public string Name { get; set; }
-        public ushort StartAdress { get; set; }
-        public int NumberOfPoints { get; set; }
-        public List<ushort> RegisterOffsets { get; set; }
+namespace OvenSensorReader.Settings;
+internal class OvenSettings {
+    public int OvenID { get; set; } = 0;
+    public byte SlaveID { get; set; } = 0;
 
-}
+    public OvenModel OvenModel { get; set; } = new OvenModel();
+
+
+    public override string ToString() {
+        return $"OvenID: {OvenID}, \nSlaveID: {SlaveID}, \nOvenModel: {OvenModel.Name}";
+    }
+
 }
