@@ -103,7 +103,6 @@ partial class FormMain {
         buttonSetAllCheckboxesON = new Button();
         checkBoxLoop = new CheckBox();
         textBoxTIMEOUT = new TextBox();
-        buttonConnectReadDis = new Button();
         label11 = new Label();
         comboBoxOvenModel1 = new ComboBox();
         comboBoxOvenModel2 = new ComboBox();
@@ -138,9 +137,8 @@ partial class FormMain {
         labelCOMPortConnectionResult.AutoSize = true;
         labelCOMPortConnectionResult.Location = new Point(55, 345);
         labelCOMPortConnectionResult.Name = "labelCOMPortConnectionResult";
-        labelCOMPortConnectionResult.Size = new Size(148, 15);
+        labelCOMPortConnectionResult.Size = new Size(0, 15);
         labelCOMPortConnectionResult.TabIndex = 2;
-        labelCOMPortConnectionResult.Text = "Нажмите кнопку Connect";
         // 
         // textBoxSlaveID1
         // 
@@ -887,16 +885,6 @@ partial class FormMain {
         textBoxTIMEOUT.TabIndex = 0;
         textBoxTIMEOUT.Text = "250";
         // 
-        // buttonConnectReadDis
-        // 
-        buttonConnectReadDis.Location = new Point(257, 319);
-        buttonConnectReadDis.Name = "buttonConnectReadDis";
-        buttonConnectReadDis.Size = new Size(100, 23);
-        buttonConnectReadDis.TabIndex = 1;
-        buttonConnectReadDis.Text = "Cnn-Read-Disc";
-        buttonConnectReadDis.UseVisualStyleBackColor = true;
-        buttonConnectReadDis.Click += buttonConnectReadDis_Click;
-        // 
         // label11
         // 
         label11.AutoSize = true;
@@ -1051,7 +1039,6 @@ partial class FormMain {
         Controls.Add(textBoxSlaveID1);
         Controls.Add(labelCOMPortConnectionResult);
         Controls.Add(buttonDisconnectCOM);
-        Controls.Add(buttonConnectReadDis);
         Controls.Add(buttonReadValuesOnce);
         Controls.Add(buttonConnectToCOM);
         Controls.Add(textBoxTIMEOUT);
@@ -1149,7 +1136,6 @@ partial class FormMain {
     private Button buttonSetAllCheckboxesON;
     private CheckBox checkBoxLoop;
     private TextBox textBoxTIMEOUT;
-    private Button buttonConnectReadDis;
     private Label label11;
     private ComboBox comboBoxOvenModel1;
     private ComboBox comboBoxOvenModel2;

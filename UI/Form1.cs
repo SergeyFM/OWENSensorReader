@@ -33,7 +33,7 @@ public partial class FormMain : Form {
 
         slaveIDs = new List<TextBox>() { textBoxSlaveID1, textBoxSlaveID2, textBoxSlaveID3, textBoxSlaveID4, textBoxSlaveID5, textBoxSlaveID6 };
 
-        
+
         LoadSettings();
 
         ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
@@ -80,7 +80,8 @@ public partial class FormMain : Form {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void buttonDisconnectCOM_Click(object sender, EventArgs e) {
-        this.labelCOMPortConnectionResult.Text = ModbusReader.ClosePort() ? "Closing OK" : "Error closing";
+        if (ModbusReader._PORT != null && ModbusReader._PORT.IsOpen)
+            this.labelCOMPortConnectionResult.Text = ModbusReader.ClosePort() ? "Closing OK" : "Error closing";
     }
 
 
@@ -91,15 +92,16 @@ public partial class FormMain : Form {
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void buttonReadValuesOnce_Click(object sender, EventArgs e) {
+    private async void buttonReadValuesOnce_Click(object sender, EventArgs e) {
         ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
+        if (ModbusReader._PORT != null && ModbusReader._PORT.IsOpen == false) buttonConnectToCOM_Click(sender, e);
         int ind = 0;
-
         do {
             Application.DoEvents();
             if (ModbusReader._PORT is null || ModbusReader._PORT.IsOpen == false || checkboxes.Count(c => c.Checked) == 0) checkBoxLoop.Checked = false;
             Application.DoEvents();
-            fillTheLine(ind, checkboxes, fields, slaveIDs, ovenModelsFields);
+            bool res = await Task.Run(() => fillTheLine(ind, checkboxes, fields, slaveIDs, ovenModelsFields));
+            checkboxes[ind].Checked = res;
             ind++;
             if (ind >= 6 && checkBoxLoop.Checked) ind = 0;
         } while (ind < 6);
@@ -113,20 +115,20 @@ public partial class FormMain : Form {
     /// <param name="checkboxes"></param>
     /// <param name="fields"></param>
     /// <param name="slaveIDs"></param>
-    private void fillTheLine(int lineInd, List<CheckBox> checkboxes, List<TextBox[]> fields, List<TextBox> slaveIDs, List<ComboBox> ovenModelNames) {
+    private bool fillTheLine(int lineInd, List<CheckBox> checkboxes, List<TextBox[]> fields, List<TextBox> slaveIDs, List<ComboBox> ovenModelNames) {
         try {
-            
-            if (checkboxes[lineInd].Checked == false) return;
+
+            if (checkboxes[lineInd].Checked == false) return false;
             List<TextBox> lineTextBoxes = fields[lineInd].ToList();
             OvenModel currentOvenModel = glSettingsProvider.GetSettings_OvenModelsList().Where(m => m.Name == ovenModelsFields[lineInd].SelectedItem.ToString()).FirstOrDefault();
             ushort startAddress = currentOvenModel.StartAdress;
             byte slaveId = Convert.ToByte(slaveIDs[lineInd].Text);
             var values = ModbusReader.ReadHoldingRegisters(slaveId, startAddress, currentOvenModel.NumberOfPoints);
             if (values is null) {
-                checkboxes[lineInd].Checked = false;
-                return;
+                //checkboxes[lineInd].Checked = false;
+                return false;
             }
-            
+
             for (int i = 0; i < 8; i++) {
 
                 ushort offset = currentOvenModel.RegisterOffsets[i];
@@ -134,13 +136,15 @@ public partial class FormMain : Form {
                 var cellVal = values[offset].ToString();
                 lineTextBoxes[i].Text = cellVal;
                 string message = $"SlaveID: {slaveId}, Offset: {offset}, Value: {cellVal}";
-                glLogger.Log(message);
-                Application.DoEvents();
-                Thread.Sleep(40);
+                //glLogger.Log(message);
+                //Application.DoEvents();
+                //Thread.Sleep(20);
             }
+            return true;
         } catch (Exception ex) {
-            glLogger.Log("fillTheLine: " + ex.Message);
-            checkboxes[lineInd].Checked = false;
+            //glLogger.Log("fillTheLine: " + ex.Message);
+            //checkboxes[lineInd].Checked = false;
+            return false;
         }
 
     }
@@ -153,27 +157,20 @@ public partial class FormMain : Form {
         checkboxes.ForEach(x => x.Checked = true);
     }
 
-    private void buttonConnectReadDis_Click(object sender, EventArgs e) {
-        buttonConnectToCOM_Click(sender, e);
-        checkBoxLoop.Checked = false;
-        buttonReadValuesOnce_Click(sender, e);
-        buttonDisconnectCOM_Click(sender, e);
-    }
-
     private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
         SaveSettings();
     }
 
     private void SaveSettings() {
 
-    AppSettings appSettings = new AppSettings() {
+        AppSettings appSettings = new AppSettings() {
             AppSettingID = 0,
             CheckBoxesList = checkboxes.Select(c => c.Checked).ToList(),
             ComPort = textBoxCOMPort.Text,
             LoopCheckBox = checkBoxLoop.Checked,
             Timeout = int.TryParse(textBoxTIMEOUT.Text, out int timeout) ? timeout : 200
         };
-    List<OvenSettings> ovenSettings = slaveIDs.Select(s => new OvenSettings() {
+        List<OvenSettings> ovenSettings = slaveIDs.Select(s => new OvenSettings() {
             OvenID = slaveIDs.IndexOf(s),
             SlaveID = byte.TryParse(s.Text, out byte slaveID) ? slaveID : (byte)0,
             OvenModel = glSettingsProvider.GetSettings_OvenModelsList().FirstOrDefault(o => o.Name == ovenModelsFields[slaveIDs.IndexOf(s)].SelectedItem.ToString())
