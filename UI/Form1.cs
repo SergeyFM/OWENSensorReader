@@ -2,10 +2,10 @@ namespace OvenSensorReader;
 
 public partial class FormMain : Form {
 
-    public List<CheckBox> checkboxes;
-    public List<TextBox[]> fields;
-    public List<TextBox> slaveIDs;
-    public List<ComboBox> ovenModelsFields;
+    public List<CheckBox> checkboxes = new();
+    public List<TextBox[]> fields = new();
+    public List<TextBox> slaveIDs = new();
+    public List<ComboBox> ovenModelsFields = new();
 
     public FormMain() {
         InitializeComponent();

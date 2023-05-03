@@ -1,5 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-
+using OvenSensorReader.Settings;
 
 namespace OvenSensorReader.Test;
 
@@ -13,6 +13,15 @@ internal static class TesterClass {
     public static void Run() {
         AllocConsole();
 
+        var a = new AppSettings(); //default(AppSettings);
+        Console.WriteLine(a);
+
+
+        Console.ReadKey();
+
+    }
+
+    public static void testSettings() {
 
         var ovenModel = new OvenModel() {
             OvenModelID = 0,
@@ -47,7 +56,7 @@ internal static class TesterClass {
 
 
         glSettingsProvider.SaveSettings(appSettings);
-        glSettingsProvider.SaveSettings(new List<OvenSettings>() { oven});
+        glSettingsProvider.SaveSettings(new List<OvenSettings>() { oven });
         glSettingsProvider.SaveSettings(ovenModel);
         glSettingsProvider.SaveSettings(ovenModel2);
 
@@ -63,12 +72,7 @@ internal static class TesterClass {
         Console.WriteLine("\n* App settings:\n" + appSettings2);
         Console.WriteLine("\n* Oven settings:\n" + oven2.First());
         Console.WriteLine("\n* Oven models:\n" + ovenModelsFromFiles.First());
-
-        Console.ReadKey();
-
     }
-
-
 
     // To open a console ---------------------------
     [DllImport("kernel32.dll", SetLastError = true)]

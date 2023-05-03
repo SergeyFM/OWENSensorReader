@@ -34,19 +34,19 @@ internal class SettingsProvider {
     }
 
     public AppSettings GetSettings_AppSettings(int SettingsID = 0) {
-        if (_AppSettings is null || _AppSettings.Count == 0) return default(AppSettings);
+        if (_AppSettings is null || _AppSettings.Count == 0) return new AppSettings();
         AppSettings sett = _AppSettings.FirstOrDefault(s => s.AppSettingID == SettingsID);
         return sett;
     }
 
     public List<OvenSettings> GetSettings_OvenSettingsList(int SettingsIDmin = 0, int SettingsIDmax = 5) {
-        if (_OvenSettings is null || _OvenSettings.Count == 0) return Enumerable.Repeat(default(OvenSettings), 6).ToList();
+        if (_OvenSettings is null || _OvenSettings.Count == 0) return Enumerable.Repeat(new OvenSettings(), 6).ToList();
         List<OvenSettings> sett = _OvenSettings.Where(s => s.OvenID >= SettingsIDmin && s.OvenID <= SettingsIDmax).ToList();
         return sett;
     }
 
     public List<OvenModel> GetSettings_OvenModelsList() {
-        if (_OvenModels is null || _OvenModels.Count == 0) return Enumerable.Repeat(default(OvenModel), 1).ToList();
+        if (_OvenModels is null || _OvenModels.Count == 0) return Enumerable.Repeat(new OvenModel(), 1).ToList();
         List<OvenModel> sett = _OvenModels;
         return sett;
     }

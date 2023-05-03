@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace OvenSensorReader.Settings {
     internal class OvenModel {
-        public int OvenModelID { get; set; }
-        public string Name { get; set; }
-        public ushort StartAdress { get; set; }
-        public ushort NumberOfPoints { get; set; }
-        public List<ushort> RegisterOffsets { get; set; }
+        public int OvenModelID { get; set; } = 0;
+        public string Name { get; set; } = "NONE";
+        public ushort StartAdress { get; set; } = 0;
+        public ushort NumberOfPoints { get; set; } = 0;
+        public List<ushort> RegisterOffsets { get; set; } = new List<ushort>() { 0,0,0,0,0,0,0,0 };
 
 
 
