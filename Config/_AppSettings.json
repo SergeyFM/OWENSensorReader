@@ -1,0 +1,16 @@
+[
+  {
+    "AppSettingID": 0,
+    "ComPort": "COM9",
+    "Timeout": 300,
+    "CheckBoxesList": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    "LoopCheckBox": false
+  }
+]

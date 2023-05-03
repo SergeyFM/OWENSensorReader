@@ -1,0 +1,122 @@
+[
+  {
+    "OvenID": 0,
+    "SlaveID": 100,
+    "OvenModel": {
+      "OvenModelID": 0,
+      "Name": "МВ110-220.8АС",
+      "StartAdress": 263,
+      "NumberOfPoints": 16,
+      "RegisterOffsets": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ]
+    }
+  },
+  {
+    "OvenID": 1,
+    "SlaveID": 108,
+    "OvenModel": {
+      "OvenModelID": 0,
+      "Name": "МВ110-220.8АС",
+      "StartAdress": 263,
+      "NumberOfPoints": 16,
+      "RegisterOffsets": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ]
+    }
+  },
+  {
+    "OvenID": 2,
+    "SlaveID": 116,
+    "OvenModel": {
+      "OvenModelID": 0,
+      "Name": "МВ110-220.8АС",
+      "StartAdress": 263,
+      "NumberOfPoints": 16,
+      "RegisterOffsets": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ]
+    }
+  },
+  {
+    "OvenID": 3,
+    "SlaveID": 124,
+    "OvenModel": {
+      "OvenModelID": 0,
+      "Name": "МВ110-220.8АС",
+      "StartAdress": 263,
+      "NumberOfPoints": 16,
+      "RegisterOffsets": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ]
+    }
+  },
+  {
+    "OvenID": 4,
+    "SlaveID": 132,
+    "OvenModel": {
+      "OvenModelID": 0,
+      "Name": "МВ110-220.8АС",
+      "StartAdress": 263,
+      "NumberOfPoints": 16,
+      "RegisterOffsets": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ]
+    }
+  },
+  {
+    "OvenID": 5,
+    "SlaveID": 140,
+    "OvenModel": {
+      "OvenModelID": 0,
+      "Name": "МВ110-220.8АС",
+      "StartAdress": 263,
+      "NumberOfPoints": 16,
+      "RegisterOffsets": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15
+      ]
+    }
+  }
+]
