@@ -6,6 +6,7 @@ public partial class FormMain : Form {
     public List<TextBox[]> fields = new();
     public List<TextBox> slaveIDs = new();
     public List<ComboBox> ovenModelsFields = new();
+    public List<Button> buttons = new();
 
     public FormMain() {
         InitializeComponent();
@@ -33,10 +34,15 @@ public partial class FormMain : Form {
 
         slaveIDs = new List<TextBox>() { textBoxSlaveID1, textBoxSlaveID2, textBoxSlaveID3, textBoxSlaveID4, textBoxSlaveID5, textBoxSlaveID6 };
 
+        buttons = new List<Button>() { buttonConnectToCOM, buttonDisconnectCOM, buttonReadValuesOnce };
 
         LoadSettings();
 
         ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
+    }
+
+    public void SetButtonsEnable(bool enable) {
+        buttons.ForEach(b =>  b.Enabled = enable);
     }
 
     public void LoadSettings() {
@@ -93,6 +99,7 @@ public partial class FormMain : Form {
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private async void buttonReadValuesOnce_Click(object sender, EventArgs e) {
+        SetButtonsEnable(false);
         ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
         if (ModbusReader._PORT != null && ModbusReader._PORT.IsOpen == false) buttonConnectToCOM_Click(sender, e);
         int ind = 0;
@@ -106,6 +113,7 @@ public partial class FormMain : Form {
             if (ind >= 6 && checkBoxLoop.Checked) ind = 0;
         } while (ind < 6);
         buttonDisconnectCOM_Click(sender, e);
+        SetButtonsEnable(true);
     }
 
     /// <summary>
