@@ -4,7 +4,7 @@ internal class AppSettings {
     public int AppSettingID { get; set; } = 0;
     public string ComPort { get; set; } = "COM1";
     public int Timeout { get; set; } = 1000;
-    public List<bool> CheckBoxesList { get; set; } = new List<bool>() { true, true, true, true, true, true };
+    public List<bool> CheckBoxesList { get; set; } = new List<bool>();
     public bool LoopCheckBox { get; set; }  = false;
 
 

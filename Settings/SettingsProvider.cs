@@ -60,14 +60,21 @@ internal class SettingsProvider {
     public void LoadSettingsFile() {
         try {
             var json = File.ReadAllText(nameof(_AppSettings) + ".json");
+            _AppSettings.Clear();
             _AppSettings.AddRange(JsonConvert.DeserializeObject<List<AppSettings>>(json));
 
+            _AppSettings.ForEach(aset => {
+                Console.WriteLine(aset);
+            });
+
             json = File.ReadAllText(nameof(_OvenSettings) + ".json");
+            _OvenSettings.Clear();
             _OvenSettings.AddRange(JsonConvert.DeserializeObject<List<OvenSettings>>(json));
             if (_OvenSettings.Count < 6)
                 _OvenSettings.AddRange(Enumerable.Repeat(new OvenSettings(), 6 - _OvenSettings.Count));
 
             json = File.ReadAllText(nameof(_OvenModels) + ".json");
+            _OvenModels.Clear();
             _OvenModels.AddRange(JsonConvert.DeserializeObject<List<OvenModel>>(json));
         } catch (Exception ex) {
             glLogger.Log(ex.Message);

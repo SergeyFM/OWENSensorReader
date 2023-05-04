@@ -15,45 +15,7 @@ public class ModbusReader
     public static IModbusMaster _MASTER = null;
     public static int TIMEOUT = 80;
 
-    /// <summary>
-    /// Test function
-    /// </summary>
-    public static void DoAll_TEST()
-    {
-        SerialPort port = new SerialPort("COM9");
-        port.BaudRate = 9600;
-        port.DataBits = 8;
-        port.Parity = Parity.None;
-        port.StopBits = StopBits.One;
-        port.ReadTimeout = TIMEOUT;
-        port.WriteTimeout = TIMEOUT;
-
-        port.Open();
-
-        _PORT = port;
-
-        var factory = new ModbusFactory();
-        IModbusMaster? master = null;
-        master = factory.CreateRtuMaster(_PORT);
-        master.Transport.ReadTimeout = TIMEOUT;
-        master.Transport.WriteTimeout = TIMEOUT;
-        _MASTER = master;
-
-        ushort[] data;
-        try
-        {
-            data = _MASTER.ReadHoldingRegisters(182, 1, 16);
-
-        }
-        catch (Exception ex)
-        {
-            glLogger.Log($"ReadHoldingRegisters: {ex}");
-            data = null;
-        }
-
-        Console.WriteLine($"Result: {data?.First()}");
-
-    }
+   
     /// <summary>
     /// Opens COM port and saves it in the global variable _PORT
     /// </summary>
@@ -78,10 +40,10 @@ public class ModbusReader
             port.Open();
 
             if (!port.IsOpen) {
-                glLogger.Log($"Unsucessfully tried opening the port {PrimarySerialPortName}");
+                glLogger.Log($"Unsucessfully tried to open the port {PrimarySerialPortName}", true);
                 return false;
             } else {
-                glLogger.Log($"Opened the port {PrimarySerialPortName}");
+                glLogger.Log($"Opened the port {PrimarySerialPortName}", true);
             }
 
             _PORT = port;
@@ -89,7 +51,7 @@ public class ModbusReader
         }
         catch (Exception ex)
         {
-            glLogger.Log($"OpenPort: {ex.Message}");
+            glLogger.Log($"OpenPort: {ex.Message}", true);
             return false;
         }
 
@@ -110,7 +72,7 @@ public class ModbusReader
         }
         catch (Exception ex)
         {
-            glLogger.Log($"ClosePort: {ex.Message}");
+            glLogger.Log($"ClosePort: {ex.Message}", true);
             return false;
         }
     }

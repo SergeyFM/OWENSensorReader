@@ -776,7 +776,7 @@ partial class FormMain {
         buttonReadValuesOnce.TabIndex = 1;
         buttonReadValuesOnce.Text = "Read";
         buttonReadValuesOnce.UseVisualStyleBackColor = true;
-        buttonReadValuesOnce.Click += buttonReadValuesOnce_Click;
+        buttonReadValuesOnce.Click += buttonReadValuesOnce_ClickAsync;
         // 
         // statusStrip
         // 

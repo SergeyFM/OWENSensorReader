@@ -4,7 +4,7 @@ namespace OvenSensorReader.Log;
 
 /// <summary>
 /// Logger class.
-/// Prints info to the console and tries to update info on the form (if provided).
+/// Prints info to the console and tries to update info on the form (if provided and allowed).
 /// </summary>
 internal class Logger
 {
