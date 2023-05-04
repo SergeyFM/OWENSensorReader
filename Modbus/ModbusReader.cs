@@ -7,25 +7,22 @@ namespace OvenSensorReader.Modbus;
 /// <summary>
 /// Static class with modbus functions
 /// </summary>
-public class ModbusReader
-{
+public class ModbusReader {
 
 
     public static SerialPort _PORT = null;
     public static IModbusMaster _MASTER = null;
     public static int TIMEOUT = 80;
 
-   
+
     /// <summary>
     /// Opens COM port and saves it in the global variable _PORT
     /// </summary>
     /// <param name="PrimarySerialPortName"></param>
     /// <returns></returns>
-    public static bool OpenPort(string PrimarySerialPortName)
-    {
+    public static bool OpenPort(string PrimarySerialPortName) {
 
-        try
-        {
+        try {
 
             SerialPort port = new SerialPort(PrimarySerialPortName);
             port.BaudRate = 9600;
@@ -40,18 +37,16 @@ public class ModbusReader
             port.Open();
 
             if (!port.IsOpen) {
-                glLogger.Log($"Unsucessfully tried to open the port {PrimarySerialPortName}", true);
+                glLogger.Log($"Unsucessfully tried to open the port {PrimarySerialPortName}");
                 return false;
             } else {
-                glLogger.Log($"Opened the port {PrimarySerialPortName}", true);
+                glLogger.Log($"Opened the port {PrimarySerialPortName}");
             }
 
             _PORT = port;
 
-        }
-        catch (Exception ex)
-        {
-            glLogger.Log($"OpenPort: {ex.Message}", true);
+        } catch (Exception ex) {
+            glLogger.Log($"OpenPort: {ex.Message}");
             return false;
         }
 
@@ -62,16 +57,12 @@ public class ModbusReader
     /// Closts COM port
     /// </summary>
     /// <returns></returns>
-    public static bool ClosePort()
-    {
+    public static bool ClosePort() {
         if (_PORT == null || _PORT.IsOpen == false) return true;
-        try
-        {
+        try {
             _PORT.Close();
             return true;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             glLogger.Log($"ClosePort: {ex.Message}", true);
             return false;
         }
@@ -82,10 +73,9 @@ public class ModbusReader
     /// </summary>
     /// <param name="_PORT"></param>
     /// <returns></returns>
-    public static bool CreateRtuMaster(SerialPort _PORT)
-    {
-        try
-        {
+    public static bool CreateRtuMaster(SerialPort _PORT) {
+        if (ModbusReader._PORT == null || ModbusReader._PORT.IsOpen == false) return false;
+        try {
             var factory = new ModbusFactory();
             IModbusMaster? master = null;
             master = factory.CreateRtuMaster(_PORT);
@@ -95,10 +85,8 @@ public class ModbusReader
             master.Transport.WriteTimeout = TIMEOUT;
             _MASTER = master;
             return true;
-        }
-        catch (Exception ex)
-        {
-            glLogger.Log($"CreateRtuMaster: {ex.Message}");
+        } catch (Exception ex) {
+            glLogger.Log($"CreateRtuMaster: {ex.Message}", true);
             return false;
         }
     }
@@ -108,10 +96,8 @@ public class ModbusReader
     /// </summary>
     /// <param name="_PORT"></param>
     /// <returns></returns>
-    public static bool CreateAsciiMaster(SerialPort _PORT)
-    {
-        try
-        {
+    public static bool CreateAsciiMaster(SerialPort _PORT) {
+        try {
             var factory = new ModbusFactory();
             IModbusMaster? master = null;
             master = factory.CreateAsciiMaster(_PORT);
@@ -119,9 +105,7 @@ public class ModbusReader
             master.Transport.WriteTimeout = TIMEOUT;
             _MASTER = master;
             return true;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             glLogger.Log($"CreateAsciiMaster: {ex.Message}");
             return false;
         }
@@ -134,25 +118,19 @@ public class ModbusReader
     /// <param name="startAddress"></param>
     /// <param name="numberOfPoints"></param>
     /// <returns></returns>
-    public static ushort[] ReadHoldingRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints)
-    {
-        if (_PORT == null || _PORT.IsOpen == false)
-        {
+    public static ushort[] ReadHoldingRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
+        if (_PORT == null || _PORT.IsOpen == false) {
             glLogger.Log("COM Port is not ready");
             return null;
         }
-        if (_MASTER is null)
-        {
+        if (_MASTER is null) {
             glLogger.Log("_MASTER is null");
             return null;
         }
-        try
-        {
+        try {
             var data = _MASTER?.ReadHoldingRegisters(slaveId, startAddress, numberOfPoints);
             return data;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             glLogger.Log($"ReadHoldingRegisters({slaveId}, {startAddress}, {numberOfPoints}: {ex.Message}");
             return null;
         }
@@ -165,15 +143,11 @@ public class ModbusReader
     /// <param name="startAddress"></param>
     /// <param name="numberOfPoints"></param>
     /// <returns></returns>
-    public static ushort[] ReadInputRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints)
-    {
-        try
-        {
+    public static ushort[] ReadInputRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
+        try {
             var data = _MASTER?.ReadInputRegisters(slaveId, startAddress, numberOfPoints);
             return data;
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             glLogger.Log($"ReadInputRegisters: {ex.Message}");
             return null;
         }
@@ -184,16 +158,14 @@ public class ModbusReader
     /// </summary>
     /// <param name="ovenVariant"></param>
     /// <returns></returns>
-    public static List<ushort> GetOvenInputOffsets(int ovenVariant = 0)
-    {
+    public static List<ushort> GetOvenInputOffsets(int ovenVariant = 0) {
         // 0 ОВЕН МВ110-220.8АС
         // 1 ОВЕН МВ110-224.8А
         // first go register offsets
         // then address
         var ovenNames = new List<string>() { "МВ110-220.8АС", "МВ110-224.8А" };
         //glLogger.Log($"Oven model: {ovenNames[ovenVariant]}");
-        return ovenVariant switch
-        {
+        return ovenVariant switch {
             0 => new List<ushort>() { 1, 3, 5, 7, 9, 11, 13, 15, 263 },
             1 => new List<ushort>() { 1, 7, 13, 19, 25, 31, 37, 43, 0 },
             _ => null

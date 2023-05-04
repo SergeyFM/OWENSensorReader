@@ -94,6 +94,7 @@ partial class FormMain {
         buttonReadValuesOnce = new Button();
         statusStrip = new StatusStrip();
         toolStripStatusLabel = new ToolStripStatusLabel();
+        toolStripProgressBar1 = new ToolStripProgressBar();
         checkBox1 = new CheckBox();
         checkBox2 = new CheckBox();
         checkBox3 = new CheckBox();
@@ -130,7 +131,7 @@ partial class FormMain {
         buttonConnectToCOM.TabIndex = 1;
         buttonConnectToCOM.Text = "Connect";
         buttonConnectToCOM.UseVisualStyleBackColor = true;
-        buttonConnectToCOM.Click += buttonConnectToCOM_Click;
+        buttonConnectToCOM.Click += buttonConnectToCOM_ClickAsync;
         // 
         // labelCOMPortConnectionResult
         // 
@@ -780,7 +781,7 @@ partial class FormMain {
         // 
         // statusStrip
         // 
-        statusStrip.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel });
+        statusStrip.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel, toolStripProgressBar1 });
         statusStrip.Location = new Point(0, 398);
         statusStrip.Name = "statusStrip";
         statusStrip.Size = new Size(1003, 22);
@@ -790,6 +791,13 @@ partial class FormMain {
         // 
         toolStripStatusLabel.Name = "toolStripStatusLabel";
         toolStripStatusLabel.Size = new Size(0, 17);
+        // 
+        // toolStripProgressBar1
+        // 
+        toolStripProgressBar1.Alignment = ToolStripItemAlignment.Right;
+        toolStripProgressBar1.Name = "toolStripProgressBar1";
+        toolStripProgressBar1.Size = new Size(100, 16);
+        toolStripProgressBar1.Visible = false;
         // 
         // checkBox1
         // 
@@ -869,12 +877,11 @@ partial class FormMain {
         // 
         // checkBoxLoop
         // 
-        checkBoxLoop.AutoSize = true;
-        checkBoxLoop.Location = new Point(471, 323);
+        checkBoxLoop.Location = new Point(477, 319);
         checkBoxLoop.Name = "checkBoxLoop";
-        checkBoxLoop.Size = new Size(50, 19);
+        checkBoxLoop.Size = new Size(100, 23);
         checkBoxLoop.TabIndex = 11;
-        checkBoxLoop.Text = "loop";
+        checkBoxLoop.Text = "Loop switch";
         checkBoxLoop.UseVisualStyleBackColor = true;
         // 
         // textBoxTIMEOUT
@@ -1144,4 +1151,5 @@ partial class FormMain {
     private ComboBox comboBoxOvenModel5;
     private ComboBox comboBoxOvenModel6;
     private Label label12;
+    private ToolStripProgressBar toolStripProgressBar1;
 }

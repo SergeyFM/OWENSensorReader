@@ -15,16 +15,22 @@ public partial class FormMain : Form {
     private void FormMain_Load(object sender, EventArgs e) {
         Logger.FormPtr = this;
         glLogger.Log("Loading the main form...");
+        this.checkBoxLoop.Appearance = Appearance.Button;
         LoadFormElements();
         LoadSettings();
     }
 
-    private void buttonConnectToCOM_Click(object sender, EventArgs e) {
-        ConnectToCOMPort();
+    private async void buttonConnectToCOM_ClickAsync(object sender, EventArgs e) {
+        SetButtonsEnable(false);
+        await ConnectToCOMPortAsync();
+        SetButtonsEnable(true);
     }
 
     private void buttonDisconnectCOM_Click(object sender, EventArgs e) {
+        SetButtonsEnable(false);
         DisconnectFromCOMPort();
+        SetButtonsEnable(true);
+
     }
 
     private void buttonReadValuesOnce_ClickAsync(object sender, EventArgs e) {
@@ -40,17 +46,20 @@ public partial class FormMain : Form {
     }
     public void SetButtonsEnable(bool enable) {
         buttons.ForEach(b => b.Enabled = enable);
+
     }
 
 
 
-    public void ConnectToCOMPort() {
-        ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
-        this.labelCOMPortConnectionResult.Text = ModbusReader.OpenPort(this.textBoxCOMPort.Text) ? "COM_cnn OK" : "COM_cnn ERR";
-        Application.DoEvents();
-        if (ModbusReader._PORT is null) return;
+    public async Task ConnectToCOMPortAsync() {
+        if (ModbusReader._PORT != null && ModbusReader._PORT.IsOpen) return;
+        glLogger.Log("Connecting to COM port...", true);
+        ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 500;
+        var res = await Task.Run(() => ModbusReader.OpenPort(this.textBoxCOMPort.Text));
+        this.labelCOMPortConnectionResult.Text = res ? "COM_cnn OK" : "COM_cnn ERR";
         string createMasterResult = ModbusReader.CreateRtuMaster(ModbusReader._PORT) ? ", RtuMaster OK" : ", RtuMaster ERR";
         this.labelCOMPortConnectionResult.Text += createMasterResult;
+        if (ModbusReader._PORT == null || ModbusReader._PORT.IsOpen == false) glLogger.Log("COM port is not ready", true);
     }
 
     public void DisconnectFromCOMPort() {
@@ -58,21 +67,34 @@ public partial class FormMain : Form {
             this.labelCOMPortConnectionResult.Text = ModbusReader.ClosePort() ? "Closing OK" : "Error closing";
     }
 
+    // Function to start constantly moving toolStripProgressBar1
+    public async Task StartProgressBarAsync() {
+        toolStripProgressBar1.Visible = true;
+        toolStripProgressBar1.Value = 0;
+        toolStripProgressBar1.Maximum = 100;
+        toolStripProgressBar1.Step = 2;
+        while (toolStripProgressBar1.Value < toolStripProgressBar1.Maximum) {
+            toolStripProgressBar1.PerformStep();
+            await Task.Delay(10);
+        }
+        toolStripProgressBar1.Visible = false;
+    }
+
+
 
     public async Task StartReadingValuesAsync() {
         SetButtonsEnable(false);
+        StartProgressBarAsync();
         glLogger.Log("Start reading data...", true);
         List<string> ovenModelsFieldsSelected = ovenModelsFields.Select(x => x.SelectedItem.ToString()).ToList();
+        await ConnectToCOMPortAsync();
 
-        ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 200;
-        if (ModbusReader._PORT == null || ModbusReader._PORT.IsOpen == false) ConnectToCOMPort();
         int ind = 0;
         do {
-            Application.DoEvents();
-            if (ModbusReader._PORT is null || ModbusReader._PORT.IsOpen == false) break;
+            if (ModbusReader._PORT == null || ModbusReader._PORT.IsOpen == false) break;
 
             if (checkboxes.Count(c => c.Checked) == 0) checkBoxLoop.Checked = false;
-            Application.DoEvents();
+
             byte slaveId = Convert.ToByte(slaveIDs[ind].Text);
             string ovenModelName = ovenModelsFieldsSelected[ind];
             glLogger.Log($"SlaveID: {slaveId}", true);
@@ -86,8 +108,10 @@ public partial class FormMain : Form {
                 glLogger.Log($"Couldn't read SlaveID: {slaveId}", true);
             }
             ind++;
-            if (ind >= 6 && checkBoxLoop.Checked) ind = 0;
+            if (ind >= 6 && checkBoxLoop.Checked) { ind = 0; StartProgressBarAsync(); }
+
         } while (ind < 6);
+
         DisconnectFromCOMPort();
         SetButtonsEnable(true);
     }
