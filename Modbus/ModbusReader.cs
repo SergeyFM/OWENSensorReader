@@ -73,7 +73,16 @@ public class ModbusReader
             port.ReadTimeout = TIMEOUT;
             port.WriteTimeout = TIMEOUT;
 
+            glLogger.Log("Open port...");
+
             port.Open();
+
+            if (!port.IsOpen) {
+                glLogger.Log($"Unsucessfully tried opening the port {PrimarySerialPortName}");
+                return false;
+            } else {
+                glLogger.Log($"Opened the port {PrimarySerialPortName}");
+            }
 
             _PORT = port;
 

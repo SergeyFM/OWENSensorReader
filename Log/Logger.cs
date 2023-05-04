@@ -9,19 +9,16 @@ namespace OvenSensorReader.Log;
 internal class Logger
 {
     public static FormMain FormPtr { get; set; }
-    public void Log(string message, bool critical = false)
+    public void Log(string message, bool toForm = false)
     {
         Console.WriteLine($">> {message}");
-        if (FormPtr is not null)
+       if (FormPtr is not null && toForm)
         {
             Application.DoEvents();
             FormPtr.toolStripStatusLabel.Text = message;
             FormPtr.statusStrip.Refresh();
             Application.DoEvents();
-            if (critical)
-            {
 
-            }
 
         }
 
