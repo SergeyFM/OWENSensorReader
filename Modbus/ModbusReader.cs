@@ -10,9 +10,9 @@ namespace OvenSensorReader.Modbus;
 public class ModbusReader {
 
 
-    public static SerialPort _PORT = null;
-    public static IModbusMaster _MASTER = null;
-    public static int TIMEOUT = 80;
+    public SerialPort _PORT = null;
+    public IModbusMaster _MASTER = null;
+    public int TIMEOUT = 80;
 
 
     /// <summary>
@@ -20,7 +20,7 @@ public class ModbusReader {
     /// </summary>
     /// <param name="PrimarySerialPortName"></param>
     /// <returns></returns>
-    public static bool OpenPort(string PrimarySerialPortName) {
+    public bool OpenPort(string PrimarySerialPortName) {
 
         try {
 
@@ -57,7 +57,7 @@ public class ModbusReader {
     /// Closts COM port
     /// </summary>
     /// <returns></returns>
-    public static bool ClosePort() {
+    public bool ClosePort() {
         if (_PORT == null || _PORT.IsOpen == false) return true;
         try {
             _PORT.Close();
@@ -73,8 +73,8 @@ public class ModbusReader {
     /// </summary>
     /// <param name="_PORT"></param>
     /// <returns></returns>
-    public static bool CreateRtuMaster(SerialPort _PORT) {
-        if (ModbusReader._PORT == null || ModbusReader._PORT.IsOpen == false) return false;
+    public bool CreateRtuMaster(SerialPort _PORT) {
+        if (glModbusReader._PORT == null || glModbusReader._PORT.IsOpen == false) return false;
         try {
             var factory = new ModbusFactory();
             IModbusMaster? master = null;
@@ -96,7 +96,7 @@ public class ModbusReader {
     /// </summary>
     /// <param name="_PORT"></param>
     /// <returns></returns>
-    public static bool CreateAsciiMaster(SerialPort _PORT) {
+    public bool CreateAsciiMaster(SerialPort _PORT) {
         try {
             var factory = new ModbusFactory();
             IModbusMaster? master = null;
@@ -118,7 +118,7 @@ public class ModbusReader {
     /// <param name="startAddress"></param>
     /// <param name="numberOfPoints"></param>
     /// <returns></returns>
-    public static ushort[] ReadHoldingRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
+    public ushort[] ReadHoldingRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
         if (_PORT == null || _PORT.IsOpen == false) {
             glLogger.Log("COM Port is not ready");
             return null;
@@ -143,7 +143,7 @@ public class ModbusReader {
     /// <param name="startAddress"></param>
     /// <param name="numberOfPoints"></param>
     /// <returns></returns>
-    public static ushort[] ReadInputRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
+    public ushort[] ReadInputRegisters(byte slaveId, ushort startAddress, ushort numberOfPoints) {
         try {
             var data = _MASTER?.ReadInputRegisters(slaveId, startAddress, numberOfPoints);
             return data;
@@ -158,18 +158,50 @@ public class ModbusReader {
     /// </summary>
     /// <param name="ovenVariant"></param>
     /// <returns></returns>
-    public static List<ushort> GetOvenInputOffsets(int ovenVariant = 0) {
+    public List<ushort> GetOvenInputOffsets(int ovenVariant = 0) {
         // 0 ОВЕН МВ110-220.8АС
         // 1 ОВЕН МВ110-224.8А
         // first go register offsets
         // then address
         var ovenNames = new List<string>() { "МВ110-220.8АС", "МВ110-224.8А" };
-        //glLogger.Log($"Oven model: {ovenNames[ovenVariant]}");
         return ovenVariant switch {
             0 => new List<ushort>() { 1, 3, 5, 7, 9, 11, 13, 15, 263 },
             1 => new List<ushort>() { 1, 7, 13, 19, 25, 31, 37, 43, 0 },
             _ => null
         };
     }
+
+    /// <summary>
+    /// Returns a list of values from the oven
+    /// </summary>
+    /// <param name="slaveId"></param>
+    /// <param name="ovenModelName"></param>
+    /// <returns></returns>
+    public List<string> ReadListOfValues(byte slaveId, string ovenModelName) {
+        try {
+            OvenModel currentOvenModel = glSettingsProvider.GetSettings_OvenModelsList().Where(m => m.Name == ovenModelName).FirstOrDefault();
+            ushort startAddress = currentOvenModel.StartAdress;
+            var values = glModbusReader.ReadHoldingRegisters(slaveId, startAddress, currentOvenModel.NumberOfPoints);
+            if (values is null) return null;
+
+            List<string> vals = new();
+
+            for (int i = 0; i < 8; i++) {
+
+                ushort offset = currentOvenModel.RegisterOffsets[i];
+
+                var cellVal = values[offset].ToString();
+                //lineTextBoxes[i].Text = cellVal;
+                vals.Add(cellVal);
+            }
+            return vals;
+        } catch (Exception ex) {
+            glLogger.Log("ReadListOfValues: " + ex.Message);
+
+            return null;
+        }
+
+    }
+
 
 }

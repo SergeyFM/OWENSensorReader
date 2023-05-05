@@ -1,3 +1,5 @@
+using OvenSensorReader.Modbus;
+
 namespace OvenSensorReader;
 
 public partial class FormMain : Form {
@@ -30,41 +32,30 @@ public partial class FormMain : Form {
         SetButtonsEnable(false);
         DisconnectFromCOMPort();
         SetButtonsEnable(true);
-
     }
 
-    private void buttonReadValuesOnce_ClickAsync(object sender, EventArgs e) {
-        StartReadingValuesAsync();
-    }
+    private void buttonReadValuesOnce_ClickAsync(object sender, EventArgs e) => StartReadingValuesAsync();
+    
+    private void buttonSetAllCheckboxesON_Click(object sender, EventArgs e) => checkboxes.ForEach(x => x.Checked = true);
+    
+    private void FormMain_FormClosing(object sender, FormClosingEventArgs e) => SaveSettings();
 
-    private void buttonSetAllCheckboxesON_Click(object sender, EventArgs e) {
-        checkboxes.ForEach(x => x.Checked = true);
-    }
-
-    private void FormMain_FormClosing(object sender, FormClosingEventArgs e) {
-        SaveSettings();
-    }
-    public void SetButtonsEnable(bool enable) {
-        buttons.ForEach(b => b.Enabled = enable);
-
-    }
-
-
+    public void SetButtonsEnable(bool enable) => buttons.ForEach(b => b.Enabled = enable);
 
     public async Task ConnectToCOMPortAsync() {
-        if (ModbusReader._PORT != null && ModbusReader._PORT.IsOpen) return;
+        if (glModbusReader._PORT != null && glModbusReader._PORT.IsOpen) return;
         glLogger.Log("Connecting to COM port...", true);
-        ModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out ModbusReader.TIMEOUT) ? ModbusReader.TIMEOUT : 500;
-        var res = await Task.Run(() => ModbusReader.OpenPort(this.textBoxCOMPort.Text));
+        glModbusReader.TIMEOUT = int.TryParse(textBoxTIMEOUT.Text, out glModbusReader.TIMEOUT) ? glModbusReader.TIMEOUT : 500;
+        var res = await Task.Run(() => glModbusReader.OpenPort(this.textBoxCOMPort.Text));
         this.labelCOMPortConnectionResult.Text = res ? "COM_cnn OK" : "COM_cnn ERR";
-        string createMasterResult = ModbusReader.CreateRtuMaster(ModbusReader._PORT) ? ", RtuMaster OK" : ", RtuMaster ERR";
+        string createMasterResult = glModbusReader.CreateRtuMaster(glModbusReader._PORT) ? ", RtuMaster OK" : ", RtuMaster ERR";
         this.labelCOMPortConnectionResult.Text += createMasterResult;
-        if (ModbusReader._PORT == null || ModbusReader._PORT.IsOpen == false) glLogger.Log("COM port is not ready", true);
+        if (glModbusReader._PORT == null || glModbusReader._PORT.IsOpen == false) glLogger.Log("COM port is not ready", true);
     }
 
     public void DisconnectFromCOMPort() {
-        if (ModbusReader._PORT != null && ModbusReader._PORT.IsOpen)
-            this.labelCOMPortConnectionResult.Text = ModbusReader.ClosePort() ? "Closing OK" : "Error closing";
+        if (glModbusReader._PORT != null && glModbusReader._PORT.IsOpen)
+            this.labelCOMPortConnectionResult.Text = glModbusReader.ClosePort() ? "Closing OK" : "Error closing";
     }
 
     // Function to start constantly moving toolStripProgressBar1
@@ -80,8 +71,6 @@ public partial class FormMain : Form {
         toolStripProgressBar1.Visible = false;
     }
 
-
-
     public async Task StartReadingValuesAsync() {
         SetButtonsEnable(false);
         StartProgressBarAsync();
@@ -91,7 +80,7 @@ public partial class FormMain : Form {
 
         int ind = 0;
         do {
-            if (ModbusReader._PORT == null || ModbusReader._PORT.IsOpen == false) break;
+            if (glModbusReader._PORT == null || glModbusReader._PORT.IsOpen == false) break;
 
             if (checkboxes.Count(c => c.Checked) == 0) checkBoxLoop.Checked = false;
 
@@ -99,7 +88,7 @@ public partial class FormMain : Form {
             string ovenModelName = ovenModelsFieldsSelected[ind];
             glLogger.Log($"SlaveID: {slaveId}", true);
 
-            var res = await Task.Run(() => fillTheLine(slaveId, ovenModelName));
+            var res = await Task.Run(() => glModbusReader.ReadListOfValues(slaveId, ovenModelName));
 
             if (res != null) {
                 for (int i = 0; i < 8; i++) fields[ind][i].Text = res[i];
@@ -115,35 +104,8 @@ public partial class FormMain : Form {
         DisconnectFromCOMPort();
         SetButtonsEnable(true);
     }
-
-    private List<string> fillTheLine(byte slaveId, string ovenModelName) {
-        try {
-            OvenModel currentOvenModel = glSettingsProvider.GetSettings_OvenModelsList().Where(m => m.Name == ovenModelName).FirstOrDefault();
-            ushort startAddress = currentOvenModel.StartAdress;
-            var values = ModbusReader.ReadHoldingRegisters(slaveId, startAddress, currentOvenModel.NumberOfPoints);
-            if (values is null) return null;
-
-            List<string> vals = new();
-
-            for (int i = 0; i < 8; i++) {
-
-                ushort offset = currentOvenModel.RegisterOffsets[i];
-
-                var cellVal = values[offset].ToString();
-                //lineTextBoxes[i].Text = cellVal;
-                vals.Add(cellVal);
-            }
-            return vals;
-        } catch (Exception ex) {
-            glLogger.Log("fillTheLine: " + ex.Message);
-
-            return null;
-        }
-
-    }
-
+   
     private void SaveSettings() {
-
         AppSettings appSettings = new AppSettings() {
             AppSettingID = 0,
             CheckBoxesList = checkboxes.Select(c => c.Checked).ToList(),
@@ -195,9 +157,6 @@ public partial class FormMain : Form {
 
 
     }
-
-
-
 
 
     // ---------------------------------------------------------------------------------------------------------------------------
