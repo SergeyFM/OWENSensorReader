@@ -59,27 +59,30 @@ public partial class FormMain : Form {
     }
 
     // Function to start constantly moving toolStripProgressBar1
+    public static bool progressBarIsON = false;
     public async Task StartProgressBarAsync() {
+        progressBarIsON = true;
         toolStripProgressBar1.Visible = true;
         toolStripProgressBar1.Value = 0;
         toolStripProgressBar1.Maximum = 100;
-        toolStripProgressBar1.Step = 2;
+        toolStripProgressBar1.Step = 1;
         while (toolStripProgressBar1.Value < toolStripProgressBar1.Maximum) {
             toolStripProgressBar1.PerformStep();
             await Task.Delay(10);
         }
         toolStripProgressBar1.Visible = false;
+        progressBarIsON = false;
     }
 
     public async Task StartReadingValuesAsync() {
         SetButtonsEnable(false);
-        StartProgressBarAsync();
         glLogger.Log("Start reading data...", true);
         List<string> ovenModelsFieldsSelected = ovenModelsFields.Select(x => x.SelectedItem.ToString()).ToList();
         await ConnectToCOMPortAsync();
 
         int ind = 0;
         do {
+            if (progressBarIsON == false) StartProgressBarAsync();
             if (glModbusReader._PORT == null || glModbusReader._PORT.IsOpen == false) break;
 
             if (checkboxes.Count(c => c.Checked) == 0) checkBoxLoop.Checked = false;
@@ -97,7 +100,7 @@ public partial class FormMain : Form {
                 glLogger.Log($"Couldn't read SlaveID: {slaveId}", true);
             }
             ind++;
-            if (ind >= 6 && checkBoxLoop.Checked) { ind = 0; StartProgressBarAsync(); }
+            if (ind >= 6 && checkBoxLoop.Checked) ind = 0;
 
         } while (ind < 6);
 
