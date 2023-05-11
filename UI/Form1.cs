@@ -35,9 +35,9 @@ public partial class FormMain : Form {
     }
 
     private void buttonReadValuesOnce_ClickAsync(object sender, EventArgs e) => StartReadingValuesAsync();
-    
+
     private void buttonSetAllCheckboxesON_Click(object sender, EventArgs e) => checkboxes.ForEach(x => x.Checked = true);
-    
+
     private void FormMain_FormClosing(object sender, FormClosingEventArgs e) => SaveSettings();
 
     public void SetButtonsEnable(bool enable) => buttons.ForEach(b => b.Enabled = enable);
@@ -104,7 +104,7 @@ public partial class FormMain : Form {
         DisconnectFromCOMPort();
         SetButtonsEnable(true);
     }
-   
+
     private void SaveSettings() {
         AppSettings appSettings = new AppSettings() {
             AppSettingID = 0,

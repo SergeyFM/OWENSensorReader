@@ -1052,7 +1052,7 @@ partial class FormMain {
         Controls.Add(textBoxCOMPort);
         FormBorderStyle = FormBorderStyle.FixedToolWindow;
         Name = "FormMain";
-        Text = "OVEN MB110-220.8AC and OVEN MB110-224.8A READER";
+        Text = "Modbus reader";
         FormClosing += FormMain_FormClosing;
         Load += FormMain_Load;
         statusStrip.ResumeLayout(false);
