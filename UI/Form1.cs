@@ -17,7 +17,7 @@ public partial class FormMain : Form {
     private void FormMain_Load(object sender, EventArgs e) {
         Logger.FormPtr = this;
         glLogger.Log("Loading the main form...");
-        this.checkBoxLoop.Appearance = Appearance.Button;
+        //this.checkBoxLoop.Appearance = Appearance.Button;
         LoadFormElements();
         LoadSettings();
     }
@@ -80,6 +80,8 @@ public partial class FormMain : Form {
         List<string> ovenModelsFieldsSelected = ovenModelsFields.Select(x => x.SelectedItem.ToString()).ToList();
         await ConnectToCOMPortAsync();
 
+        Dictionary<int, string> valBuffer = new();
+
         int ind = 0;
         do {
             if (progressBarIsON == false) StartProgressBarAsync();
@@ -92,9 +94,12 @@ public partial class FormMain : Form {
             glLogger.Log($"SlaveID: {slaveId}", true);
 
             var res = await Task.Run(() => glModbusReader.ReadListOfValues(slaveId, ovenModelName));
+            string res_str = res.Aggregate("", (a, b) => a + "+" + b);
+            bool dataIsTheSame =  valBuffer.ContainsKey(ind) && valBuffer[ind] == res_str;
+            if (!dataIsTheSame) valBuffer[ind] = res_str;
 
             if (res != null) {
-                for (int i = 0; i < 8; i++) fields[ind][i].Text = res[i];
+                if (!dataIsTheSame) for (int i = 0; i < 8; i++) fields[ind][i].Text = res[i];
             } else {
                 checkboxes[ind].Checked = false;
                 glLogger.Log($"Couldn't read SlaveID: {slaveId}", true);
@@ -107,6 +112,7 @@ public partial class FormMain : Form {
         DisconnectFromCOMPort();
         SetButtonsEnable(true);
     }
+
 
     private void SaveSettings() {
         AppSettings appSettings = new AppSettings() {
