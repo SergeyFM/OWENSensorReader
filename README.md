@@ -1,6 +1,6 @@
 # OVENSensorReader
-Reads input registers of OVEN modules: ОВЕН MB110-220.8AC, ОВЕН MB110-224.8A
-Uses Modbus RTU master via Serial Port. Uses ReadHoldingRegisters() function. Works asynchronously.
+This app reads and displays input registers of OVEN modules: ОВЕН MB110-220.8AC, ОВЕН MB110-224.8A
+It is possible to add other models. Communication goes with Modbus RTU master via Serial Port. The ReadHoldingRegisters() function is used. The app works asynchronously.
 
 ![](form.png)
 
