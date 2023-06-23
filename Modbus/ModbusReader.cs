@@ -54,13 +54,14 @@ public class ModbusReader {
     }
 
     /// <summary>
-    /// Closts COM port
+    /// Closes COM port
     /// </summary>
     /// <returns></returns>
     public bool ClosePort() {
         if (_PORT == null || _PORT.IsOpen == false) return true;
         try {
             _PORT.Close();
+            Console.WriteLine("Port closed.");
             return true;
         } catch (Exception ex) {
             glLogger.Log($"ClosePort: {ex.Message}", true);
@@ -180,18 +181,26 @@ public class ModbusReader {
     public List<string> ReadListOfValues(byte slaveId, string ovenModelName) {
         try {
             OvenModel currentOvenModel = glSettingsProvider.GetSettings_OvenModelsList().Where(m => m.Name == ovenModelName).FirstOrDefault();
+            Console.WriteLine(currentOvenModel.Name);
             ushort startAddress = currentOvenModel.StartAdress;
-            var values = glModbusReader.ReadHoldingRegisters(slaveId, startAddress, currentOvenModel.NumberOfPoints);
-            if (values is null) return null;
+           // var values = glModbusReader.ReadHoldingRegisters(slaveId, startAddress, currentOvenModel.NumberOfPoints);
+            var values = glModbusReader.ReadInputRegisters(slaveId, startAddress, currentOvenModel.NumberOfPoints);
 
+            if (values is null) return null;
+            values.ToList().ForEach(l => Console.Write(l));
+            Console.WriteLine();
             List<string> vals = new();
 
             for (int i = 0; i < 8; i++) {
 
-                ushort offset = currentOvenModel.RegisterOffsets[i];
+                //ushort offset = currentOvenModel.RegisterOffsets[i];
+                var RegisterOffsets = new List<ushort>() { 1, 3, 5, 7, 9, 11, 13, 15 };
+                ushort offset = RegisterOffsets[i];
 
+                Console.Write($"{i}: off {offset} ");
                 var cellVal = values[offset].ToString();
                 //lineTextBoxes[i].Text = cellVal;
+                Console.WriteLine(cellVal);
                 vals.Add(cellVal);
             }
             return vals;
